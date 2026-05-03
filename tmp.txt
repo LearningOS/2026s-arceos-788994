@@ -389,10 +389,10 @@ smp = 1
 build_mode = release
 log_level = warn
 
-[37m[  0.585944 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.654233 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.731760 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.812194 0 fatfs::dir:139] [31mIs a directory[m
+[37m[  0.580900 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.640047 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.709377 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.789108 0 fatfs::dir:139] [31mIs a directory[m
 [mphdr: offset: 0x0=>0x10000 size: 0x5A30=>0x5A30
 VA:0x10000 - VA:0x16000
 phdr: offset: 0x5FD0=>0x16FD0 size: 0x140=>0x7B0
@@ -517,12 +517,18 @@ smp = 1
 build_mode = release
 log_level = warn
 
-[37m[  0.565635 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.629217 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.705120 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.780661 0 fatfs::dir:139] [31mIs a directory[m
+[37m[  0.449198 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.505566 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.571087 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.646416 0 fatfs::dir:139] [31mIs a directory[m
 [mHypervisor ...
 app: /sbin/skernel2
 paddr: PA:0x80644000
-simple_hv default
-500
+Found _start at offset 0x0
+VmExit Reason: VSuperEcall: Some(Reset(Reset { reset_type: Shutdown, reason: NoReason }))
+a0 = 0x6688, a1 = 0x1234
+Shutdown vm normally!
+[37m[  0.709423 0:2 axruntime::lang_items:5] [31mpanicked at exercises/simple_hv/src/main.rs:77:5:
+Hypervisor ok![m
+[msimple_hv pass
+600
