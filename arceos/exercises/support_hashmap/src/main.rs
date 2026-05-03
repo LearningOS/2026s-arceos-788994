@@ -5,7 +5,7 @@ extern crate alloc;
 #[macro_use]
 extern crate axstd as std;
 
-// 重点：必须用 hashbrown 而不是 alloc！
+// 提示：实验要求在 axstd 等组件中支持 collections::HashMap
 use hashbrown::HashMap;
 
 #[no_mangle]

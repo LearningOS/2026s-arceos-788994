@@ -132,15 +132,17 @@ fn handle_syscall(tf: &TrapFrame, syscall_num: usize) -> isize {
 }
 
 #[allow(unused_variables)]
-fn sys_mmap(
-    addr: *mut usize,
-    length: usize,
-    prot: i32,
-    flags: i32,
-    fd: i32,
-    _offset: isize,
-) -> isize {
-    unimplemented!("no sys_mmap!");
+fn sys_mmap(addr: *mut usize, length: usize, prot: i32, _flags: i32, _fd: i32, _offset: isize) -> isize {
+    // 关键修复：先绑定到变量，延长生命周期
+    let curr = current(); 
+    let mut uspace = curr.task_ext().aspace.lock();
+    
+    let vaddr = axhal::mem::VirtAddr::from(addr as usize);
+    let mapping_flags = MmapProt::from_bits_truncate(prot).into();
+    
+    uspace.map_alloc(vaddr, length, mapping_flags, true)
+        .map(|_| addr as isize)
+        .unwrap_or(-1)
 }
 
 fn sys_openat(dfd: c_int, fname: *const c_char, flags: c_int, mode: api::ctypes::mode_t) -> isize {

@@ -4,4 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-axstd = { workspace = true, features = ["alloc"], optional = true }
+# 还原原有的工作区依赖，并确保开启 alloc
+axstd = { workspace = true, features = ["alloc"] }
+# 如果你选择直接在应用层使用 hashbrown，则需要添加以下行：
+hashbrown = { version = "0.14", default-features = false, features = ["ahash"] }

@@ -12,3 +12,22 @@ pub fn getchar() -> Option<u8> {
         c => Some(c as u8),
     }
 }
+
+pub fn write_bytes(buf: &[u8]) -> usize {
+    // \x1b[31m 是红色，\x1b[0m 是重置颜色[cite: 5]
+    crate::platform::riscv64_qemu_virt::console::putchar(b'\x1b');
+    crate::platform::riscv64_qemu_virt::console::putchar(b'[');
+    crate::platform::riscv64_qemu_virt::console::putchar(b'3');
+    crate::platform::riscv64_qemu_virt::console::putchar(b'1');
+    crate::platform::riscv64_qemu_virt::console::putchar(b'm');
+
+    for &c in buf {
+        crate::platform::riscv64_qemu_virt::console::putchar(c);
+    }
+
+    crate::platform::riscv64_qemu_virt::console::putchar(b'\x1b');
+    crate::platform::riscv64_qemu_virt::console::putchar(b'[');
+    crate::platform::riscv64_qemu_virt::console::putchar(b'0');
+    crate::platform::riscv64_qemu_virt::console::putchar(b'm');
+    buf.len()
+}

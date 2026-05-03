@@ -141,8 +141,8 @@ log_level = warn
 
 Create '/tmp/f1' and write [hello] ...
 Rename '/tmp/f1' to '/tmp/f2' ...
-[37m[  0.387694 0 axfs_vfs:160] [33m[AxError::Unsupported][m
-[m[37m[  0.392115 0 axruntime::lang_items:5] [31mpanicked at exercises/ramfs_rename/src/main.rs:51:9:
+[37m[  0.403388 0 axfs_vfs:160] [33m[AxError::Unsupported][m
+[m[37m[  0.406880 0 axruntime::lang_items:5] [31mpanicked at exercises/ramfs_rename/src/main.rs:51:9:
 Error: Operation not supported[m
 [mramfs_rename fault
     [92;1mCreating[0m FAT32 disk image "disk.img" ...
@@ -214,14 +214,85 @@ smp = 1
 build_mode = release
 log_level = warn
 
-[37m[  0.070047 0 axruntime::lang_items:5] [31mpanicked at /home/xu/os/2026s-arceos-788994/arceos/modules/bump_allocator/src/lib.rs:29:9:
-not yet implemented[m
-[malt_alloc default
+Running bump tests...
+Bump tests run OK!
+alt_alloc pass
     [92;1mCreating[0m FAT32 disk image "disk.img" ...
 mkfs.fat 4.2 (2021-01-31)
     [92;1mBuilding[0m App: support_hashmap, Arch: riscv64, Platform: riscv64-qemu-virt, App type: rust
 [37mcargo -C exercises/support_hashmap/ build[0m [90m-Z unstable-options --target riscv64gc-unknown-none-elf --target-dir /home/xu/os/2026s-arceos-788994/arceos/target --release  --features "axstd/log-level-warn"[0m
-support_hashmap default
+[37mrust-objcopy --binary-architecture=riscv64[0m [90mexercises/support_hashmap//support_hashmap_riscv64-qemu-virt.elf --strip-all -O binary exercises/support_hashmap//support_hashmap_riscv64-qemu-virt.bin[0m
+    [96;1mRunning[0m on qemu...
+[37mqemu-system-riscv64[0m [90m-m 128M -smp 1 -machine virt -bios default -kernel exercises/support_hashmap//support_hashmap_riscv64-qemu-virt.bin -drive if=pflash,file=/home/xu/os/2026s-arceos-788994/arceos/pflash.img,format=raw,unit=1 -nographic -D qemu.log -d in_asm,int,mmu,pcall,cpu_reset,guest_errors[0m
+
+OpenSBI v1.0
+   ____                    _____ ____ _____
+  / __ \                  / ____|  _ \_   _|
+ | |  | |_ __   ___ _ __ | (___ | |_) || |
+ | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
+ | |__| | |_) |  __/ | | |____) | |_) || |_
+  \____/| .__/ \___|_| |_|_____/|____/_____|
+        | |
+        |_|
+
+Platform Name             : riscv-virtio,qemu
+Platform Features         : medeleg
+Platform HART Count       : 1
+Platform IPI Device       : aclint-mswi
+Platform Timer Device     : aclint-mtimer @ 10000000Hz
+Platform Console Device   : uart8250
+Platform HSM Device       : ---
+Platform Reboot Device    : sifive_test
+Platform Shutdown Device  : sifive_test
+Firmware Base             : 0x80000000
+Firmware Size             : 252 KB
+Runtime SBI Version       : 0.3
+
+Domain0 Name              : root
+Domain0 Boot HART         : 0
+Domain0 HARTs             : 0*
+Domain0 Region00          : 0x0000000002000000-0x000000000200ffff (I)
+Domain0 Region01          : 0x0000000080000000-0x000000008003ffff ()
+Domain0 Region02          : 0x0000000000000000-0xffffffffffffffff (R,W,X)
+Domain0 Next Address      : 0x0000000080200000
+Domain0 Next Arg1         : 0x0000000087000000
+Domain0 Next Mode         : S-mode
+Domain0 SysReset          : yes
+
+Boot HART ID              : 0
+Boot HART Domain          : root
+Boot HART ISA             : rv64imafdcsuh
+Boot HART Features        : scounteren,mcounteren,time
+Boot HART PMP Count       : 16
+Boot HART PMP Granularity : 4
+Boot HART PMP Address Bits: 54
+Boot HART MHPM Count      : 0
+Boot HART MIDELEG         : 0x0000000000001666
+Boot HART MEDELEG         : 0x0000000000f0b509
+
+       d8888                            .d88888b.   .d8888b.
+      d88888                           d88P" "Y88b d88P  Y88b
+     d88P888                           888     888 Y88b.
+    d88P 888 888d888  .d8888b  .d88b.  888     888  "Y888b.
+   d88P  888 888P"   d88P"    d8P  Y8b 888     888     "Y88b.
+  d88P   888 888     888      88888888 888     888       "888
+ d8888888888 888     Y88b.    Y8b.     Y88b. .d88P Y88b  d88P
+d88P     888 888      "Y8888P  "Y8888   "Y88888P"   "Y8888P"
+
+arch = riscv64
+platform = riscv64-qemu-virt
+target = riscv64gc-unknown-none-elf
+smp = 1
+build_mode = release
+log_level = warn
+
+Running memory tests...
+2 => b
+3 => c
+1 => a
+test_hashmap() OK!
+Memory tests run OK!
+support_hashmap pass
     [92;1mCreating[0m FAT32 disk image "disk.img" ...
 mkfs.fat 4.2 (2021-01-31)
 make[1]: Entering directory '/home/xu/os/2026s-arceos-788994/arceos/payload'
@@ -317,10 +388,10 @@ smp = 1
 build_mode = release
 log_level = warn
 
-[37m[  0.483110 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.525075 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.588886 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.670245 0 fatfs::dir:139] [31mIs a directory[m
+[37m[  0.471396 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.528554 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.593758 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.664390 0 fatfs::dir:139] [31mIs a directory[m
 [mphdr: offset: 0x0=>0x10000 size: 0x5A30=>0x5A30
 VA:0x10000 - VA:0x16000
 phdr: offset: 0x5FD0=>0x16FD0 size: 0x140=>0x7B0
@@ -341,8 +412,47 @@ handle_syscall [64] ...
 handle_syscall [57] ...
 handle_syscall [56] ...
 handle_syscall [222] ...
-[37m[  0.893008 0:4 axruntime::lang_items:5] [31mpanicked at exercises/sys_map/src/syscall.rs:143:5:
-not implemented: no sys_mmap![m
+[37m[  0.884537 0:4 axmm::aspace:151] [33m[AxError::InvalidInput] address not aligned[m
+[m[37m[  0.889485 0:4 axhal::arch::riscv::trap:24] [33mNo registered handler for trap PAGE_FAULT[m
+[m[37m[  0.892325 0:4 axruntime::lang_items:5] [31mpanicked at modules/axhal/src/arch/riscv/trap.rs:25:9:
+Unhandled User Page Fault @ 0x1293e, fault_vaddr=VA:0xffffffffffffffff (READ | USER):
+TrapFrame {
+    regs: GeneralRegisters {
+        ra: 0x12240,
+        sp: 0x3ffffffc70,
+        gp: 0x17800,
+        tp: 0x176f8,
+        t0: 0x7,
+        t1: 0x0,
+        t2: 0x800000,
+        s0: 0xffffffffffffffff,
+        s1: 0x7fffffff,
+        a0: 0xffffffffffffffff,
+        a1: 0x0,
+        a2: 0x7fffffff,
+        a3: 0x14ba0,
+        a4: 0x7,
+        a5: 0xffffffffffffffff,
+        a6: 0x73,
+        a7: 0x7fffffec,
+        s2: 0x0,
+        s3: 0x3ffffffd80,
+        s4: 0x25,
+        s5: 0x13,
+        s6: 0x14cb0,
+        s7: 0x17000,
+        s8: 0x7fffffff,
+        s9: 0xffffffffffffffff,
+        s10: 0x0,
+        s11: 0x0,
+        t3: 0x0,
+        t4: 0x3a,
+        t5: 0x14ab0,
+        t6: 0x0,
+    },
+    sepc: 0x1293e,
+    sstatus: 0x200040020,
+}[m
 [msys_mmap default
     [92;1mCreating[0m FAT32 disk image "disk.img" ...
 mkfs.fat 4.2 (2021-01-31)
@@ -439,14 +549,14 @@ smp = 1
 build_mode = release
 log_level = warn
 
-[37m[  0.481045 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.540452 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.612946 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.683765 0 fatfs::dir:139] [31mIs a directory[m
+[37m[  0.499229 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.557641 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.623609 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.693852 0 fatfs::dir:139] [31mIs a directory[m
 [mHypervisor ...
 app: /sbin/skernel2
 paddr: PA:0x80644000
-[37m[  0.727346 0:2 axruntime::lang_items:5] [31mpanicked at exercises/simple_hv/src/main.rs:105:13:
-Bad instruction: 0xf14025f3 sepc: 0x80200000[m
+[37m[  0.738605 0:2 axruntime::lang_items:5] [31mpanicked at exercises/simple_hv/src/main.rs:114:17:
+Unknown instruction: 0x84ae842a[m
 [msimple_hv default
-0
+200

@@ -102,11 +102,19 @@ fn vmexit_handler(ctx: &mut VmCpuRegisters) -> bool {
             }
         },
         Trap::Exception(Exception::IllegalInstruction) => {
-            panic!("Bad instruction: {:#x} sepc: {:#x}",
-                stval::read(),
-                ctx.guest_regs.sepc
-            );
+            // 关键修复：使用 phys_to_virt 转换地址
+            let gpa = ctx.guest_regs.sepc;
+            let hva = axhal::mem::phys_to_virt(gpa.into());
+            let insn = unsafe { *(hva.as_ptr() as *const u32) };
+        
+            if insn == 0xf14025f3 { // csrr a1, mhartid
+                ctx.guest_regs.gprs.set_reg(A1, 0); // 模拟返回 HartID 0
+                ctx.guest_regs.sepc += 4;         // 指令步进，防止死循环[cite: 8]
+            } else {
+                panic!("Unknown instruction: {:#x}", insn);
+            }
         },
+
         Trap::Exception(Exception::LoadGuestPageFault) => {
             panic!("LoadGuestPageFault: stval{:#x} sepc: {:#x}",
                 stval::read(),
