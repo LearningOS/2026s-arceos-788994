@@ -116,14 +116,22 @@ impl VfsNodeOps for DirNode {
         }
         Ok(dirents.len())
     }
-    fn rename(&self, old_name: &str, new_parent: &VfsNodeRef, new_name: &str) -> VfsResult {
-        let mut children = self.children.write();
-        if let Some(node) = children.remove(old_name) {
-            let dest_dir = new_parent.as_any().downcast_ref::<DirNode>().ok_or(VfsError::InvalidInput)?;
-            dest_dir.children.write().insert(new_name.into(), node);
-            Ok(())
+    fn rename(&self, src_path: &str, dst_path: &str) -> VfsResult {
+        let src = src_path.trim_start_matches('/');
+        let dst = dst_path.rsplit('/').next().unwrap_or(dst_path);
+        
+        let (src_name, src_rest) = split_path(src);
+        
+        if src_rest.is_none() {
+            let mut children = self.children.write();
+            if let Some(node) = children.remove(src_name) {
+                children.insert(dst.into(), node);
+                Ok(())
+            } else {
+                Err(VfsError::NotFound)
+            }
         } else {
-            Err(VfsError::NotFound)
+            Err(VfsError::Unsupported)
         }
     }
     fn create(&self, path: &str, ty: VfsNodeType) -> VfsResult {

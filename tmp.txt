@@ -67,9 +67,10 @@ smp = 1
 build_mode = release
 log_level = warn
 
-[WithColor]: Hello, Arceos!
-No color
-print_with_color fault
+[31m[WithColor]: Hello, Arceos![0m
+Has color
+Has Hello, Arceos!
+print_with_color pass
     [92;1mCreating[0m FAT32 disk image "disk.img" ...
 mkfs.fat 4.2 (2021-01-31)
     [92;1mBuilding[0m App: ramfs_rename, Arch: riscv64, Platform: riscv64-qemu-virt, App type: rust
@@ -141,10 +142,10 @@ log_level = warn
 
 Create '/tmp/f1' and write [hello] ...
 Rename '/tmp/f1' to '/tmp/f2' ...
-[37m[  0.403388 0 axfs_vfs:160] [33m[AxError::Unsupported][m
-[m[37m[  0.406880 0 axruntime::lang_items:5] [31mpanicked at exercises/ramfs_rename/src/main.rs:51:9:
-Error: Operation not supported[m
-[mramfs_rename fault
+Read '/tmp/f2' content: [hello] ok!
+
+[Ramfs-Rename]: ok!
+ramfs_rename pass
     [92;1mCreating[0m FAT32 disk image "disk.img" ...
 mkfs.fat 4.2 (2021-01-31)
     [92;1mBuilding[0m App: alt_alloc, Arch: riscv64, Platform: riscv64-qemu-virt, App type: rust
@@ -388,10 +389,10 @@ smp = 1
 build_mode = release
 log_level = warn
 
-[37m[  0.471396 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.528554 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.593758 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.664390 0 fatfs::dir:139] [31mIs a directory[m
+[37m[  0.585944 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.654233 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.731760 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.812194 0 fatfs::dir:139] [31mIs a directory[m
 [mphdr: offset: 0x0=>0x10000 size: 0x5A30=>0x5A30
 VA:0x10000 - VA:0x16000
 phdr: offset: 0x5FD0=>0x16FD0 size: 0x140=>0x7B0
@@ -400,7 +401,7 @@ entry: 0x10170
 Mapping user stack: VA:0x3fffff0000 -> VA:0x4000000000
 New user address space: AddrSpace {
     va_range: VA:0x0..VA:0x4000000000,
-    page_table_root: PA:0x8064d000,
+    page_table_root: PA:0x8064e000,
 }
 handle_syscall [96] ...
 handle_syscall [29] ...
@@ -412,48 +413,15 @@ handle_syscall [64] ...
 handle_syscall [57] ...
 handle_syscall [56] ...
 handle_syscall [222] ...
-[37m[  0.884537 0:4 axmm::aspace:151] [33m[AxError::InvalidInput] address not aligned[m
-[m[37m[  0.889485 0:4 axhal::arch::riscv::trap:24] [33mNo registered handler for trap PAGE_FAULT[m
-[m[37m[  0.892325 0:4 axruntime::lang_items:5] [31mpanicked at modules/axhal/src/arch/riscv/trap.rs:25:9:
-Unhandled User Page Fault @ 0x1293e, fault_vaddr=VA:0xffffffffffffffff (READ | USER):
-TrapFrame {
-    regs: GeneralRegisters {
-        ra: 0x12240,
-        sp: 0x3ffffffc70,
-        gp: 0x17800,
-        tp: 0x176f8,
-        t0: 0x7,
-        t1: 0x0,
-        t2: 0x800000,
-        s0: 0xffffffffffffffff,
-        s1: 0x7fffffff,
-        a0: 0xffffffffffffffff,
-        a1: 0x0,
-        a2: 0x7fffffff,
-        a3: 0x14ba0,
-        a4: 0x7,
-        a5: 0xffffffffffffffff,
-        a6: 0x73,
-        a7: 0x7fffffec,
-        s2: 0x0,
-        s3: 0x3ffffffd80,
-        s4: 0x25,
-        s5: 0x13,
-        s6: 0x14cb0,
-        s7: 0x17000,
-        s8: 0x7fffffff,
-        s9: 0xffffffffffffffff,
-        s10: 0x0,
-        s11: 0x0,
-        t3: 0x0,
-        t4: 0x3a,
-        t5: 0x14ab0,
-        t6: 0x0,
-    },
-    sepc: 0x1293e,
-    sstatus: 0x200040020,
-}[m
-[msys_mmap default
+handle_syscall [66] ...
+Read back content: hello, arceos!
+handle_syscall [57] ...
+handle_syscall [66] ...
+MapFile ok!
+handle_syscall [94] ...
+[SYS_EXIT_GROUP]: system is exiting ..
+monolithic kernel exit [Some(0)] normally!
+sys_mmap pass
     [92;1mCreating[0m FAT32 disk image "disk.img" ...
 mkfs.fat 4.2 (2021-01-31)
 make[1]: Entering directory '/home/xu/os/2026s-arceos-788994/arceos/payload'
@@ -549,14 +517,12 @@ smp = 1
 build_mode = release
 log_level = warn
 
-[37m[  0.499229 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.557641 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.623609 0 fatfs::dir:139] [31mIs a directory[m
-[m[37m[  0.693852 0 fatfs::dir:139] [31mIs a directory[m
+[37m[  0.565635 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.629217 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.705120 0 fatfs::dir:139] [31mIs a directory[m
+[m[37m[  0.780661 0 fatfs::dir:139] [31mIs a directory[m
 [mHypervisor ...
 app: /sbin/skernel2
 paddr: PA:0x80644000
-[37m[  0.738605 0:2 axruntime::lang_items:5] [31mpanicked at exercises/simple_hv/src/main.rs:114:17:
-Unknown instruction: 0x84ae842a[m
-[msimple_hv default
-200
+simple_hv default
+500

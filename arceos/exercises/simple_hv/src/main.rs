@@ -49,8 +49,8 @@ fn main() {
     let ept_root = uspace.page_table_root();
     prepare_vm_pgtable(ept_root);
 
-    // Kick off vm and wait for it to exit.
-    while !run_guest(&mut ctx) {
+     // Kick off vm and wait for it to exit.
+    while !run_guest(&mut ctx, &mut uspace) {
     }
 
     panic!("Hypervisor ok!");
@@ -67,16 +67,16 @@ fn prepare_vm_pgtable(ept_root: PhysAddr) {
     }
 }
 
-fn run_guest(ctx: &mut VmCpuRegisters) -> bool {
+fn run_guest(ctx: &mut VmCpuRegisters, uspace: &mut axmm::AddrSpace) -> bool {
     unsafe {
         _run_guest(ctx);
     }
 
-    vmexit_handler(ctx)
+    vmexit_handler(ctx, uspace)
 }
 
 #[allow(unreachable_code)]
-fn vmexit_handler(ctx: &mut VmCpuRegisters) -> bool {
+fn vmexit_handler(ctx: &mut VmCpuRegisters, uspace: &mut axmm::AddrSpace) -> bool {
     use scause::{Exception, Trap};
 
     let scause = scause::read();
@@ -102,14 +102,17 @@ fn vmexit_handler(ctx: &mut VmCpuRegisters) -> bool {
             }
         },
         Trap::Exception(Exception::IllegalInstruction) => {
-            // 关键修复：使用 phys_to_virt 转换地址
-            let gpa = ctx.guest_regs.sepc;
-            let hva = axhal::mem::phys_to_virt(gpa.into());
-            let insn = unsafe { *(hva.as_ptr() as *const u32) };
+            let mut insn = stval::read() as u32;
+            if insn == 0 {
+                let gpa = axhal::mem::VirtAddr::from(ctx.guest_regs.sepc);
+                let (paddr, _, _) = uspace.page_table().query(gpa).unwrap();
+                let hva = axhal::mem::phys_to_virt(paddr);
+                insn = unsafe { *(hva.as_ptr() as *const u32) };
+            }
         
             if insn == 0xf14025f3 { // csrr a1, mhartid
-                ctx.guest_regs.gprs.set_reg(A1, 0); // 模拟返回 HartID 0
-                ctx.guest_regs.sepc += 4;         // 指令步进，防止死循环[cite: 8]
+                ctx.guest_regs.gprs.set_reg(A1, 0x1234); 
+                ctx.guest_regs.sepc += 4;         
             } else {
                 panic!("Unknown instruction: {:#x}", insn);
             }

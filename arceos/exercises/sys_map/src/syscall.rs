@@ -132,17 +132,31 @@ fn handle_syscall(tf: &TrapFrame, syscall_num: usize) -> isize {
 }
 
 #[allow(unused_variables)]
-fn sys_mmap(addr: *mut usize, length: usize, prot: i32, _flags: i32, _fd: i32, _offset: isize) -> isize {
-    // 关键修复：先绑定到变量，延长生命周期
+fn sys_mmap(addr: *mut usize, length: usize, prot: i32, _flags: i32, fd: i32, offset: isize) -> isize {
     let curr = current(); 
     let mut uspace = curr.task_ext().aspace.lock();
     
-    let vaddr = axhal::mem::VirtAddr::from(addr as usize);
+    let mut vaddr = axhal::mem::VirtAddr::from(addr as usize);
+    if vaddr.as_usize() == 0 {
+        vaddr = axhal::mem::VirtAddr::from(0x1000_0000);
+    }
+    
+    let aligned_length = (length + 0xfff) & !0xfff;
     let mapping_flags = MmapProt::from_bits_truncate(prot).into();
     
-    uspace.map_alloc(vaddr, length, mapping_flags, true)
-        .map(|_| addr as isize)
-        .unwrap_or(-1)
+    if uspace.map_alloc(vaddr, aligned_length, mapping_flags, true).is_err() {
+        return -1;
+    }
+    
+    if fd >= 0 {
+        let mut buf = alloc::vec![0u8; length];
+        let read_len = unsafe { api::sys_read(fd, buf.as_mut_ptr() as _, length) };
+        if read_len > 0 {
+            uspace.write(vaddr, &buf[..read_len as usize]).unwrap();
+        }
+    }
+    
+    vaddr.as_usize() as isize
 }
 
 fn sys_openat(dfd: c_int, fname: *const c_char, flags: c_int, mode: api::ctypes::mode_t) -> isize {
