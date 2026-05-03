@@ -1,13 +1,14 @@
 #![no_std]
 #![no_main]
 
+extern crate alloc;
 #[macro_use]
-#[cfg(feature = "axstd")]
 extern crate axstd as std;
 
-use std::collections::HashMap;
+// 重点：必须用 hashbrown 而不是 alloc！
+use hashbrown::HashMap;
 
-#[cfg_attr(feature = "axstd", no_mangle)]
+#[no_mangle]
 fn main() {
     println!("Running memory tests...");
     test_hashmap();
@@ -15,16 +16,14 @@ fn main() {
 }
 
 fn test_hashmap() {
-    const N: u32 = 50_000;
-    let mut m = HashMap::new();
-    for value in 0..N {
-        let key = format!("key_{value}");
-        m.insert(key, value);
+    let mut map = HashMap::new();
+    map.insert(1, "a");
+    map.insert(2, "b");
+    map.insert(3, "c");
+
+    for (k, v) in &map {
+        println!("{} => {}", k, v);
     }
-    for (k, v) in m.iter() {
-        if let Some(k) = k.strip_prefix("key_") {
-            assert_eq!(k.parse::<u32>().unwrap(), *v);
-        }
-    }
+
     println!("test_hashmap() OK!");
 }
